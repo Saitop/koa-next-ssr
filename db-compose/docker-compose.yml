@@ -1,0 +1,25 @@
+version: '3'
+
+networks:
+  cbs_network:
+    driver: bridge
+
+services:
+
+  postgres_db:
+    image: postgres:11.4-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-demo}
+      POSTGRES_USER: ${POSTGRES_USER:-test}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-test}
+    networks:
+      - cbs_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+volumes:
+  postgres_data: {}

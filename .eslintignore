@@ -1,0 +1,4 @@
+build
+.next
+!.eslintrc.js
+node_modules

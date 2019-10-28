@@ -1,0 +1,19 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: koa-ssr-svc
+  namespace: demo
+  labels:
+    app: koa-ssr-svc
+spec:
+  ports:
+    - name: port
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 33333
+  selector:
+    app: koa-ssr
+  type: NodePort
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster

@@ -1,0 +1,46 @@
+version: '3'
+
+networks:
+  my_network:
+    driver: bridge
+
+services:
+  koa-ssr:
+    image: koa-ssr:1.0
+    container_name: koa-ssr
+    volumes:
+      - ./:/usr/src/app
+    environment:
+      - NODE_ENV=production
+      - SECRET_KEY=SECRET_KEY
+      - K_URL=http://10.137.194.4:31671
+      - K_USERNAME=user_name
+      - K_PASSWORD=password
+      - DB_CONNECTION=postgres://test:test@postgres_db:5432/demo
+    ports:
+      - "3000:3000"
+    entrypoint:
+      - node
+      - server/index.js
+    networks:
+      - my_network
+    depends_on:
+      - postgres_db
+
+  postgres_db:
+    image: postgres:11.4-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-demo}
+      POSTGRES_USER: ${POSTGRES_USER:-test}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-test}
+    networks:
+      - my_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+volumes:
+  postgres_data: {}

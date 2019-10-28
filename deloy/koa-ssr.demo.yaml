@@ -1,0 +1,93 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: koa-ssr
+  namespace: demo
+  labels:
+    app: koa-ssr
+    version: @VERSION
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: koa-ssr
+  template:
+    metadata:
+      labels:
+        app: koa-ssr
+        version: @VERSION
+    spec:
+      containers:
+        - name: koa-ssr
+          image: 'koa-ssrt:1.0'
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: SECRET_KEY
+              value: SECRET_KEY
+            - name: K_URL
+              value: http://10.137.194.4:31671
+            - name: K_USERNAME
+              value: user_name
+            - name: K_PASSWORD
+              value: password
+            - name: DB_CONNECTION
+              value: postgres://test:test@localhost:5432/demo
+          command:
+            - node
+            - server/index.js
+          ports:
+            - name: port
+              containerPort: 3000
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+
+        - name: postgres_db
+          image: 'postgres:11.4-alpine'
+          env:
+            - name: POSTGRES_DB
+              value: demo
+            - name: POSTGRES_USER
+              value: test
+            - name: POSTGRES_PASSWORD
+              value: test
+          ports:
+            - name: por
+              containerPort: 5432
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      serviceAccountName: default
+      serviceAccount: default
+      securityContext: {}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - node15
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
