@@ -31,7 +31,7 @@
     "koa-router": "^7.4.0",
     "koa-session": "^5.12.2",
     "koa-static": "^5.0.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mississippi": "^4.0.0",
     "next": "^9.0.2",
     "p-event": "^4.1.0",
