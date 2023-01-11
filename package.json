@@ -24,7 +24,7 @@
     "config": "^3.2.2",
     "dotenv": "^8.0.0",
     "faker": "^4.1.0",
-    "knex": "^0.19.5",
+    "knex": "^2.4.0",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-logger": "^3.2.1",
